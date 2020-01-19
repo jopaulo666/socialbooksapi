@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.jopaulo.socialbooks.domain.Comentario;
 import com.jopaulo.socialbooks.domain.Livro;
 import com.jopaulo.socialbooks.service.LivrosService;
 import com.jopaulo.socialbooks.services.exceptions.LivroNaoEncontradoException;
@@ -47,7 +48,7 @@ public class LivrosResources {
 	}
 	
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-	public ResponseEntity<Void> deletar(@PathVariable("id")Long id) {
+	public ResponseEntity<Void> deletar(@PathVariable("id") Long id) {
 		livrosService.deletar(id);
 		
 		return ResponseEntity.noContent().build();
@@ -59,5 +60,14 @@ public class LivrosResources {
 		livrosService.atualizar(livro);
 		
 		return ResponseEntity.noContent().build();
+	}
+	
+	@RequestMapping(value = "/{id}/comentarios", method = RequestMethod.POST)
+	public ResponseEntity<Void> addComentario(@PathVariable("id") Long livroId, @RequestBody Comentario comentario) {
+		livrosService.salvarComentario(livroId, comentario);
+		
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().build().toUri();	
+		
+		return ResponseEntity.created(uri).build();
 	}
 }
