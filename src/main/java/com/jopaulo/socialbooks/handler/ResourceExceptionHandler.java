@@ -2,6 +2,7 @@ package com.jopaulo.socialbooks.handler;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -53,5 +54,17 @@ public class ResourceExceptionHandler {
 		erros.setTimestamp(System.currentTimeMillis());
 		
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(erros);
+	}
+	
+	@ExceptionHandler(ConstraintViolationException.class)
+	public ResponseEntity<DetalhesErros> handleConstraintViolationException(ConstraintViolationException e, HttpServletRequest request){
+		
+		DetalhesErros erros = new DetalhesErros();
+		erros.setStatus(400l);
+		erros.setTitulo("Requisição inválida");
+		erros.setMsgDesenvoledor("http://erros.socialbooks.com/404");
+		erros.setTimestamp(System.currentTimeMillis());
+		
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erros);
 	}
 }
