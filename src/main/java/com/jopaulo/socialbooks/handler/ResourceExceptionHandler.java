@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.jopaulo.socialbooks.domain.DetalhesErros;
+import com.jopaulo.socialbooks.services.exceptions.AutorExistenteException;
+import com.jopaulo.socialbooks.services.exceptions.AutorNaoEncontradoException;
 import com.jopaulo.socialbooks.services.exceptions.LivroNaoEncontradoException;
 
 /**
@@ -23,6 +25,30 @@ public class ResourceExceptionHandler {
 		DetalhesErros erros = new DetalhesErros();
 		erros.setStatus(404l);
 		erros.setTitulo("Livro não encontrado");
+		erros.setMsgDesenvoledor("http://erros.socialbooks.com/404");
+		erros.setTimestamp(System.currentTimeMillis());
+		
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(erros);
+	}
+	
+	@ExceptionHandler(AutorExistenteException.class)
+	public ResponseEntity<DetalhesErros> handleAutorExistenteException(AutorExistenteException e, HttpServletRequest request){
+		
+		DetalhesErros erros = new DetalhesErros();
+		erros.setStatus(409l);
+		erros.setTitulo("Autor já cadastrado");
+		erros.setMsgDesenvoledor("http://erros.socialbooks.com/409");
+		erros.setTimestamp(System.currentTimeMillis());
+		
+		return ResponseEntity.status(HttpStatus.CONFLICT).body(erros);
+	}
+	
+	@ExceptionHandler(AutorNaoEncontradoException.class)
+	public ResponseEntity<DetalhesErros> handleAutorNaoEncontradoException(AutorNaoEncontradoException e, HttpServletRequest request){
+		
+		DetalhesErros erros = new DetalhesErros();
+		erros.setStatus(404l);
+		erros.setTitulo("Autor não encontrado");
 		erros.setMsgDesenvoledor("http://erros.socialbooks.com/404");
 		erros.setTimestamp(System.currentTimeMillis());
 		
